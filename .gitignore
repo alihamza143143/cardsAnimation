@@ -1,0 +1,7 @@
+node_modules/
+.claude/
+package-lock.json
+spline_preview.webp
+spline_preview.png
+spline_shot*.png
+*.bin

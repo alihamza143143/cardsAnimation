@@ -1,0 +1,124 @@
+{% comment %}
+  ══════════════════════════════════════════════════
+  Card Fan Animation — Shopify Custom Section
+  ══════════════════════════════════════════════════
+  Usage:
+    1. Upload all 13 card images to Shopify Files (Settings → Files)
+    2. Place this file in  sections/card-fan-animation.liquid
+    3. Place card-fan.css  in  assets/card-fan.css
+    4. Place card-fan.js   in  assets/card-fan.js
+    5. Add the section to any page via the Theme Editor
+       (or include in a template with {% section 'card-fan-animation' %})
+    6. Configure card images via the section settings in the Theme Editor
+{% endcomment %}
+
+{{ 'card-fan.css' | asset_url | stylesheet_tag }}
+
+<section class="card-fan-section">
+  <div class="card-fan" id="card-fan">
+
+    {%- for i in (1..13) -%}
+      {%- assign setting_key = 'card_' | append: i -%}
+      {%- assign card_image = section.settings[setting_key] -%}
+      {%- if card_image != blank -%}
+        <div class="card-fan__card">
+          <img
+            src="{{ card_image | image_url: width: 400 }}"
+            alt="Card {{ i }}"
+            loading="{% if i <= 4 %}eager{% else %}lazy{% endif %}"
+            decoding="async"
+            {% if i == 1 %}fetchpriority="high"{% endif %}
+            width="260"
+            height="377"
+          >
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+<script src="{{ 'card-fan.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Card Fan Animation",
+  "tag": "section",
+  "class": "card-fan-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Card Images (King → Ace)"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_1",
+      "label": "Card 1 — King (leftmost)"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_2",
+      "label": "Card 2 — Queen"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_3",
+      "label": "Card 3 — Jack"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_4",
+      "label": "Card 4 — Ten"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_5",
+      "label": "Card 5 — Nine"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_6",
+      "label": "Card 6 — Eight"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_7",
+      "label": "Card 7 — Seven"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_8",
+      "label": "Card 8 — Six"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_9",
+      "label": "Card 9 — Five"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_10",
+      "label": "Card 10 — Four"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_11",
+      "label": "Card 11 — Three"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_12",
+      "label": "Card 12 — Two"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_13",
+      "label": "Card 13 — Ace (rightmost, Acevia logo)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Card Fan Animation"
+    }
+  ]
+}
+{% endschema %}
