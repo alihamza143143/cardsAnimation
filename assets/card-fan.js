@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════
    Card Fan Animation — Shopify Section Script
-   Performance-optimized: typed arrays, event
-   delegation, throttled mouse, DOM-diff writes
+   GPU-optimized: translate3d, Int32 diff,
+   reduced precision for fewer DOM writes
    ═══════════════════════════════════════════ */
 (function(){
   'use strict';
@@ -22,7 +22,7 @@
     return 160;
   }
 
-  var CYCLE = 6000, SFRAC = 0.12, MIN_P = 0.15;
+  var CYCLE = 6000, SFRAC = 0.12, MIN_P = 0.30;
   var P1 = 0.05, P2 = 0.38, P3 = 0.62, P4 = 0.95;
 
   function ease(t){
@@ -36,8 +36,8 @@
 
   var targets    = new Float32Array(TOTAL);
   var lifts      = new Float32Array(TOTAL);
-  var prevAngles = new Float32Array(TOTAL);
-  var prevLifts  = new Float32Array(TOTAL);
+  var prevAngles = new Int32Array(TOTAL);
+  var prevLifts  = new Int32Array(TOTAL);
   var els        = [];
 
   var halfCount = (TOTAL-1)/2;
@@ -55,8 +55,8 @@
     el.dataset.idx = i;
     els.push(el);
     targets[i] = calcAngle(i);
-    prevAngles[i] = -999;
-    prevLifts[i] = -999;
+    prevAngles[i] = -9999;
+    prevLifts[i] = -9999;
   }
 
   /* Event delegation */
@@ -104,12 +104,12 @@
         progress = MIN_P;
       } else if(cycleT<=P2){
         var pt=(cycleT-P1)/(P2-P1), d=i*invCount*SFRAC;
-        progress = MIN_P+0.85*ease(clamp01((pt-d)/(1-d)));
+        progress = MIN_P+(1-MIN_P)*ease(clamp01((pt-d)/(1-d)));
       } else if(cycleT<=P3){
         progress = 1;
       } else if(cycleT<=P4){
         var pt2=(cycleT-P3)/(P4-P3), d2=(TOTAL-1-i)*invCount*SFRAC;
-        progress = 1-0.85*ease(clamp01((pt2-d2)/(1-d2)));
+        progress = 1-(1-MIN_P)*ease(clamp01((pt2-d2)/(1-d2)));
       } else {
         progress = MIN_P;
       }
@@ -121,19 +121,18 @@
       if(lifts[i]<0.003 && lt===0) lifts[i]=0;
       if(lifts[i]>0.997 && lt===1) lifts[i]=1;
 
-      var aR=(angle*100|0), lR=(lifts[i]*100|0);
+      var aR=(angle*10|0), lR=(lifts[i]*100|0);
       if(aR===prevAngles[i] && lR===prevLifts[i]) continue;
       prevAngles[i]=aR; prevLifts[i]=lR;
 
       var arcNorm=(i-halfCount)/halfCount;
       var arcY=-(arcNorm<0?-arcNorm:arcNorm)*8*progress;
-      var tf='rotate('+angle.toFixed(2)+'deg) translateY('+arcY.toFixed(1)+'px)';
 
-      if(lifts[i]>0.01){
-        tf+=' translateY('+(-28*lifts[i]).toFixed(1)+'px) scale('+(1+0.08*lifts[i]).toFixed(4)+')';
-      }
+      var ly = lifts[i]>0.01 ? -28*lifts[i] : 0;
+      var sc = lifts[i]>0.01 ? 1+0.08*lifts[i] : 1;
 
-      els[i].style.transform = tf;
+      els[i].style.transform = 'rotate('+angle.toFixed(1)+'deg) translate3d(0,'+(arcY+ly).toFixed(1)+'px,0) scale('+sc.toFixed(3)+')';
+
       var z=lifts[i]>0.3?100:i;
       if(els[i].style.zIndex!=z) els[i].style.zIndex=z;
     }
