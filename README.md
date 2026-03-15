@@ -67,6 +67,20 @@ Add this line in any template file where you want the section:
    - Card 13 = Ace (rightmost)
 4. Click **Save**
 
+### Step 5 — Change Background Color (optional)
+
+The default background is dark navy (`#080b14`). To change it:
+
+1. Go to **Shopify Admin → Online Store → Themes → "..." → Edit code**
+2. Open **Assets → card-fan.css**
+3. Find `.card-fan-section` at the top and change the `background` value to any color you want:
+   ```css
+   .card-fan-section{
+     background: #080b14;  /* ← change this to your desired color */
+   }
+   ```
+4. Click **Save**
+
 ---
 
 ## Responsive Behavior
