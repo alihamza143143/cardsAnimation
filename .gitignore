@@ -1,6 +1,8 @@
 node_modules/
 .claude/
+CLAUDE.md
 package-lock.json
+package.json
 spline_preview.webp
 spline_preview.png
 spline_shot*.png

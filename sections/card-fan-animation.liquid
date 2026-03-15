@@ -15,6 +15,12 @@
 {{ 'card-fan.css' | asset_url | stylesheet_tag }}
 
 <section class="card-fan-section">
+  {%- if section.settings.grid_gradient != blank -%}
+    <div class="grid-glow">
+      <img src="{{ section.settings.grid_gradient | image_url: width: 700 }}" alt="" width="700" height="700">
+    </div>
+  {%- endif -%}
+
   <div class="card-fan" id="card-fan">
 
     {%- for i in (1..13) -%}
@@ -45,6 +51,15 @@
   "tag": "section",
   "class": "card-fan-wrapper",
   "settings": [
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "grid_gradient",
+      "label": "Grid gradient (top-right glow)"
+    },
     {
       "type": "header",
       "content": "Card Images (King → Ace)"

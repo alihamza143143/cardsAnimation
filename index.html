@@ -13,10 +13,36 @@
     overflow:hidden;
   }
 
+  /* ── Grid gradient decoration (top-right) ── */
+  .grid-glow{
+    position:fixed;
+    top:-10%;right:-10%;
+    width:55%;
+    max-width:700px;
+    aspect-ratio:1;
+    pointer-events:none;
+    z-index:0;
+    opacity:0.6;
+    filter:blur(1px);
+    mask-image:radial-gradient(ellipse at 70% 30%, rgba(0,0,0,0.85) 0%, transparent 75%);
+    -webkit-mask-image:radial-gradient(ellipse at 70% 30%, rgba(0,0,0,0.85) 0%, transparent 75%);
+  }
+  .grid-glow img{
+    width:100%;height:100%;
+    object-fit:contain;
+    display:block;
+  }
+  .grid-glow::after{
+    content:'';
+    position:absolute;inset:0;
+    background:radial-gradient(ellipse at 60% 40%, rgba(140,110,255,0.4) 0%, rgba(100,70,220,0.2) 35%, rgba(80,60,200,0.08) 55%, transparent 75%);
+    mix-blend-mode:screen;
+  }
+
   .fan{
     position:absolute;
     left:50%;
-    top:45%;
+    top:40%;
     transform:translate(-50%,-50%) perspective(1200px) rotateX(8deg);
     transform-style:preserve-3d;
     width:clamp(500px,85vw,1200px);
@@ -127,6 +153,8 @@
 </style>
 </head>
 <body>
+
+<div class="grid-glow"><img src="gradient (1).png" alt="" width="700" height="700"></div>
 
 <div class="fan" id="fan"></div>
 
@@ -298,9 +326,10 @@
 
       /* Use translate3d to keep on GPU layer */
       var ly = lifts[i]>0.01 ? -28*lifts[i] : 0;
-      var sc = lifts[i]>0.01 ? 1+0.08*lifts[i] : 1;
+      var tyInt = (arcY+ly+0.5|0);
+      var scStr = lifts[i]>0.01 ? (1+0.08*lifts[i]).toFixed(2) : '1';
 
-      els[i].style.transform = 'rotate('+angle.toFixed(1)+'deg) translate3d(0,'+(arcY+ly).toFixed(1)+'px,0) scale('+sc.toFixed(3)+')';
+      els[i].style.transform = 'rotate('+(aRounded/10)+'deg) translate3d(0,'+tyInt+'px,0) scale('+scStr+')';
 
       var z = lifts[i]>0.3 ? 100 : i;
       if(els[i].style.zIndex != z) els[i].style.zIndex = z;
