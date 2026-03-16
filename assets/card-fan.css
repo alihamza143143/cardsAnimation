@@ -135,12 +135,13 @@
 }
 
 @media(max-width:1023px){
-  .card-fan__card{ --w:clamp(65px,12vw,110px); }
-  .card-fan{ height:clamp(300px,50vh,500px); }
+  .card-fan__card{ --w:clamp(80px,14vw,130px); }
+  .card-fan{ height:clamp(350px,55vh,550px); }
 }
 @media(max-width:639px){
-  .card-fan__card{ --w:clamp(48px,14vw,78px); }
+  .card-fan__card{ --w:clamp(70px,20vw,120px); }
   .card-fan{
-    height:clamp(250px,45vh,380px);
+    top:45%;
+    height:clamp(300px,55vh,450px);
   }
 }
